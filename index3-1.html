@@ -1,57 +1,14 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<!-- jsPsych本体 -->
-<script src="https://unpkg.com/jspsych@7.3.0"></script>
-
-<!-- jsPsychプラグイン（使っているものだけでOK） -->
-<script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
-<script src="https://unpkg.com/@jspsych/plugin-audio-keyboard-response"></script>
 <meta charset="UTF-8">
 <title>日本語中訳反応テストその1</title>
 </head>
 <body>
-<h1>調査を開始するには下のボタンを押してください</h1>
-<button id="start">開始</button>
+
 <h2>日本語中訳反応テストその1</h2>
-<script>
-document.getElementById("start").addEventListener("click", function() {
 
-  // jsPsych初期化
-  const jsPsych = initJsPsych({
-    on_finish: function() {
-      // データ送信（GAS）
-      fetch("GAS_WEB_APP_URL", {  // ← ここをあなたのGAS URLに置き換え
-        method: "POST",
-        body: JSON.stringify(jsPsych.data.get().values())
-      });
-    }
-  });
-
-  // タイムライン作成
-  const timeline = [];
-
-  // 例: 質問1（音声再生付き）
-  timeline.push({
-    type: jsPsychHtmlButtonResponse,
-    stimulus: "<p>あなたは英語が話せますか？</p>",
-    choices: ["次へ"],
-    on_load: function() {
-      const audio = new Audio("https://www.dropbox.com/s/XXXXXX/q1.mp3?raw=1"); // ← 音声URL
-      audio.play();
-    }
-  });
-
-  // 他の質問も同様に timeline.push({...}) で追加
-
-  // 実験開始
-  jsPsych.run(timeline);
-
-});
-</script>
-<body>
-  
-  <!-- 説明・同意 -->
+<!-- 説明・同意 -->
 <div id="consentSection">
 <p>
 この調査は、日本語の問題文を聞いて（または読んで）から中国語に翻訳するまでにかかる時間を調べることを目的としています。回答内容や発音の正確さを評価するものではありませんので、安心してご参加ください。その場で言い直してもかまいません。<br>
@@ -129,22 +86,6 @@ const qs = [
   {text:"問題10：「私はケータイを家に忘れました。」", audio:"https://www.dropbox.com/scl/fi/i6k2gvqsb4vb7htg90pmy/question1-10.mp3?rlkey=cdzz6fsq60jlei4kec7s4ugze&raw=1"}
 ];
 
-function playBeep(){
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-
-  osc.type = "sine";        // 音の種類
-  osc.frequency.value = 1000; // 周波数（ピッ音）
-  gain.gain.value = 0.2;    // 音量（0〜1）
-
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.start();
-  osc.stop(ctx.currentTime + 0.15); // 0.15秒だけ鳴らす
-}
-
 document.getElementById("agree").onclick=()=>{
 document.getElementById("consentSection").style.display="none";
 document.getElementById("idSection").style.display="block";
@@ -220,15 +161,15 @@ if(qIndex===0){
   document.getElementById("instruction").innerHTML =
     "<b>（練習問題）</b><br><br>" +
     "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
-    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから発話を始めてください。<br><br>" +
+    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
     "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
-    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます）";
+    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
 }else{
   document.getElementById("instruction").innerHTML =
     "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
-    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから発話を始めてください。<br><br>" +
+    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
     "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
-    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます）";
+    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
 }
 
 audio.src = q.audio;
@@ -322,5 +263,34 @@ fetch(GAS_URL,{method:"POST",body:fd})
 }
 </script>
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>実験ページ</title>
+</head>
+<body>
+
+  <h1>調査を開始するには下のボタンを押してください</h1>
+  <p>ここに説明文や画像などが入ります</p>
+
+  <!-- ここが <body> の最後 -->
+  <button id="start">開始</button>
+
+  <script>
+    // クリック時に実験を開始するコード
+    document.getElementById("start").addEventListener("click", function() {
+      this.style.display = "none"; // ボタンを消す
+      console.log("実験スタート！");
+      startExperiment(); // あなたのタイムライン関数などを呼ぶ
+    });
+
+    function startExperiment() {
+      // ここに既存の自作コードを置く
+    }
+  </script>
+
+</body>
+</html>
 </body>
 </html>
