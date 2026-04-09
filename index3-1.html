@@ -1,4 +1,9 @@
-<!DOCTYPE html>
+jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+    }
+});<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
