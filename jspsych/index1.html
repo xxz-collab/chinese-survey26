@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>日本語中訳反応時間テスト1</title>
+</head>
+<body>
+
+<h2>日本語中訳反応時間テスト1</h2>
+
+<div id="consentSection">
+  <p>
+    この調査は、日本語の問題文を聞いて（または読んで）から中国語に翻訳するまでにかかる時間を調べることを目的としています。回答内容や発音の正確さを評価するものではありませんので、安心してご参加ください。
+    <br>本調査にご協力いただける場合、今回のテストに加えて、今後2回の短いテスト（各回10問、所要時間約5分）にもご参加いただきます。
+    <br>本調査は匿名で実施され、個人が特定されることはありません。収集された音声データがそのまま公開されることはありません。学会発表等で音声を使用する場合には、必ず変声処理（音声変換）を行います。
+    <br>また、本調査への参加・不参加や回答内容が、あなたの所属する大学での成績や評価に影響することは一切ありません。
+    <br>
+    【研究責任者】山下　智子【所属】明治学院大学 【問い合わせ先】nishik@gen.meijigakuin.ac.jp
+  </p>
+  <button id="agreeButton">同意する</button>
+  <button id="disagreeButton">同意しない</button>
+</div>
+
+<div id="idSection" style="display:none;">
+  <label>参加者ID（10文字以内、ニックネーム）: 
+    <input type="text" id="participantID" maxlength="10">
+  </label>
+  <button id="idSubmit">送信</button>
+  <p>3回すべて同じIDを使用してください。</p>
+</div>
+
+<div id="backgroundSection" style="display:none;">
+  <p>以下の質問に答えてください。</p>
+  <label>中国語学習歴（年）: <input type="text" id="studyYears"></label><br>
+  <label>HSKレベル／中検合格級: <input type="text" id="level"></label><br>
+  <label>中国語圏滞在歴（有無・期間・目的）: <input type="text" id="stayHistory"></label><br>
+  <button id="bgSubmit">送信</button>
+</div>
+
+<div id="questionSection" style="display:none;">
+  <p id="instruction"></p>
+  <p id="questionText"></p>
+  <audio id="questionAudio" controls></audio>
+  <p id="status"></p>
+  <button id="stopRecording" style="display:none;">録音終了</button>
+</div>
+
+<script>
+const DROPBOX_FOLDER = "/Apps/ChineseSurvey26/Responses/test1/";
+const DROPBOX_TOKEN = "FskgEEfa2qQAAAAAAAAAAX89X9A1HthW4COq_yT64S_83SNpYDmjuo2oO7YmfP9N"; // ←書き換え
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx24oJVos36OgV2tF5h2Q6hLDZF4-nQZq1SNwNoLWlX-s7UX7qisIpKVwJOvLMDUc5usw/exec"; 
+
+let participantID = '';
+let backgroundData = {};
+let questions = [
+  { text: "1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。音声の再生が終わると自動的にレコーディングが始まります。デバイスのマイク使用を許可して始めましょう。練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1"},
+
+  {text:"問題1：「この近くにコンビニ（便利店biànlìdiàn）はありますか？」", audio:"https://www.dropbox.com/scl/fi/i2iu60xhqy1ga6ghhe237/question1-1.mp3?rlkey=ed01vzbl1ektpupado8m4h85u&raw=1"},
+  {text:"問題2：「あなたは英語が話せますか？」", audio:"https://www.dropbox.com/scl/fi/3ujgyl20nu3sjz06lesb3/question1-2.mp3?rlkey=3eotntregmx2ata8cc9jfvs1u&raw=1"},
+  {text:"問題3：「パスポート（护照hùzhào）を見せてください。」", audio:"https://www.dropbox.com/scl/fi/i5ytt86n36edtfghzu1ms/question1-3.mp3?rlkey=f9yuerk6mbt34cp9jcws9fx8i&raw=1"},
+  {text:"問題4：「ここで写真を撮ってはいけません。」", audio:"https://www.dropbox.com/scl/fi/72q9qwsi35zb6x14vhqgy/question1-4.mp3?rlkey=vxcccuh6sb0nb6aweq2whym2g&raw=1"},
+  {text:"問題5：「日本は韓国（韩国Hánguó）より人口が多いです。」", audio:"https://www.dropbox.com/scl/fi/n55uss3rp5vt5yb4kl3fb/question1-5.mp3?rlkey=8g4hto7wdueb96s26545qa23w&raw=1"},
+  {text:"問題6：「今日の午後は雨が降るはずです。」", audio:"https://www.dropbox.com/scl/fi/hi6uzajxeuguildywgwl7/question1-6.mp3?rlkey=7gitu40hl9gddkasv1945oigr&raw=1"},
+  {text:"問題7：「この店は夜8時に閉まります。」", audio:"https://www.dropbox.com/scl/fi/s6ylafl1t175cnqfz9rls/question1-7.mp3?rlkey=yidqzjpuolp4n8itraeet1mqj&raw=1"},
+  {text:"問題8：「私は昨日、12時間寝ました。」", audio:"https://www.dropbox.com/scl/fi/yru9jwitbqc4wy1dve7ty/question1-8.mp3?rlkey=1oew9qx8uq5x7n9810te1f9ia&raw=1"},
+  {text:"問題9：「あなたはコーヒーを飲みますか、それともお茶を飲みますか？」", audio:"https://www.dropbox.com/scl/fi/0lxf69d72s8qu90tddtzv/question1-9.mp3?rlkey=jpejl28rumsringbonf48enpe&raw=1"},
+  {text:"問題10：「私はケータイを家に忘れました。」", audio:"https://www.dropbox.com/scl/fi/i6k2gvqsb4vb7htg90pmy/question1-10.mp3?rlkey=cdzz6fsq60jlei4kec7s4ugze&raw=1"}
+];
+
+let currentQuestion = 0;
+let mediaRecorder;
+let audioChunks = [];
+let startTime;
+
+// 同意・不承諾
+document.getElementById('agreeButton').onclick = () => {
+  document.getElementById('consentSection').style.display = 'none';
+  document.getElementById('idSection').style.display = 'block';
+};
+document.getElementById('disagreeButton').onclick = () => { alert('終了しました'); };
+
+// ID入力
+document.getElementById('idSubmit').onclick = () => {
+  const idInput = document.getElementById('participantID').value.trim();
+  if(!idInput){ alert('IDを入力してください'); return; }
+  participantID = idInput;
+  document.getElementById('idSection').style.display = 'none';
+  document.getElementById('backgroundSection').style.display = 'block';
+};
+
+// 背景質問
+document.getElementById('bgSubmit').onclick = () => {
+  backgroundData.studyYears = document.getElementById('studyYears').value;
+  backgroundData.level = document.getElementById('level').value;
+  backgroundData.stayHistory = document.getElementById('stayHistory').value;
+  document.getElementById('backgroundSection').style.display = 'none';
+  
+  // ここで背景データをGASに送信
+  const formData = new FormData();
+  formData.append('participantID', participantID);
+  formData.append('studyYears', backgroundData.studyYears);
+  formData.append('level', backgroundData.level);
+  formData.append('stayHistory', backgroundData.stayHistory);
+  formData.append('type','background');
+  fetch(GAS_URL,{method:'POST', body:formData})
+    .then(resp=>resp.text())
+    .then(r=>console.log(r))
+    .catch(e=>console.error(e));
+
+  document.getElementById('questionSection').style.display = 'block';
+  showQuestion();
+};
+
+// 問題表示＋録音開始
+function showQuestion(){
+  if(currentQuestion >= questions.length){
+    alert('終了です。ご協力ありがとうございました');
+    return;
+  }
+  const q = questions[currentQuestion];
+
+  if(q.practice){
+    document.getElementById('instruction').innerText = "【練習問題です】音声再生後、録音が始まります。";
+  } else if(currentQuestion === 1){
+    document.getElementById('instruction').innerText = "【本番開始】次の10問に進みます。";
+  } else {
+    document.getElementById('instruction').innerText = "";
+  }
+
+  document.getElementById('questionText').innerText = q.text;
+  const audioEl = document.getElementById('questionAudio');
+  audioEl.src = q.audio;
+  document.getElementById('status').innerText = '';
+
+  audioEl.onended = () => {
+    startRecording(q.practice);
+  };
+  audioEl.play();
+}
+
+// 録音処理
+function startRecording(isPractice){
+  navigator.mediaDevices.getUserMedia({ audio:true }).then(stream=>{
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e=>{ audioChunks.push(e.data); };
+    mediaRecorder.onstop = ()=>{
+      const blob = new Blob(audioChunks,{type:'audio/webm'});
+      document.getElementById('status').innerText = '録音終了';
+      if(!isPractice){
+        uploadToGAS(blob);
+      }
+      currentQuestion++;
+      setTimeout(showQuestion,500);
+    };
+    mediaRecorder.start();
+    startTime = Date.now();
+
+    const stopBtn = document.getElementById('stopRecording');
+    stopBtn.style.display='inline';
+    stopBtn.onclick = () => { mediaRecorder.stop(); stopBtn.style.display='none'; };
+
+    // 自動25秒録音
+    setTimeout(()=>{
+      if(mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        stopBtn.style.display='none';
+      }
+    },25000);
+  });
+}
+
+// 本番録音をGASに送信
+function uploadToGAS(blob){
+  const formData = new FormData();
+  formData.append('file', blob);
+  formData.append('participantID', participantID);
+  formData.append('questionNumber', currentQuestion);
+  formData.append('rt', Date.now()-startTime);
+  formData.append('type','response');
+
+  fetch(GAS_URL,{method:'POST', body:formData})
+    .then(resp=>resp.text())
+    .then(r=>console.log(r))
+    .catch(e=>console.error(e));
+}
+
+</script>
+
+</body>
+</html>
