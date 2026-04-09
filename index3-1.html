@@ -86,19 +86,25 @@ const qs = [
   {text:"問題10：「私はケータイを家に忘れました。」", audio:"https://www.dropbox.com/scl/fi/i6k2gvqsb4vb7htg90pmy/question1-10.mp3?rlkey=cdzz6fsq60jlei4kec7s4ugze&raw=1"}
 ];
 
-document.getElementById("agree").onclick=()=>{
-document.getElementById("consentSection").style.display="none";
-document.getElementById("idSection").style.display="block";
-};
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("agree").onclick = () => {
+    document.getElementById("consentSection").style.display = "none";
+    document.getElementById("idSection").style.display = "block";
+  };
 
-document.getElementById("disagree").onclick=()=>alert("終了しました");
+  document.getElementById("disagree").onclick = () => alert("終了しました");
 
-document.getElementById("idBtn").onclick=()=>{
-pid=document.getElementById("pid").value.trim();
-if(!pid){alert("IDを入力してください");return;}
-document.getElementById("idSection").style.display="none";
-document.getElementById("bgSection").style.display="block";
-};
+  document.getElementById("idBtn").onclick = () => {
+    pid = document.getElementById("pid").value.trim();
+    if (!pid) { alert("IDを入力してください"); return; }
+    document.getElementById("idSection").style.display = "none";
+    document.getElementById("bgSection").style.display = "block";
+  };
+
+  document.getElementById("bgBtn").onclick = () => {
+    // 省略：マイク許可・背景質問処理
+  };
+});
 
 document.getElementById("bgBtn").onclick=()=>{
 bg_years = document.getElementById("years").value;
