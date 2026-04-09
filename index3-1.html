@@ -263,34 +263,6 @@ fetch(GAS_URL,{method:"POST",body:fd})
 }
 </script>
 
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>実験ページ</title>
-</head>
-<body>
 
-  <h1>調査を開始するには下のボタンを押してください</h1>
-  <p>ここに説明文や画像などが入ります</p>
-
-  <!-- ここが <body> の最後 -->
-  <button id="start">開始</button>
-
-  <script>
-    // クリック時に実験を開始するコード
-    document.getElementById("start").addEventListener("click", function() {
-      this.style.display = "none"; // ボタンを消す
-      console.log("実験スタート！");
-      startExperiment(); // あなたのタイムライン関数などを呼ぶ
-    });
-
-    function startExperiment() {
-      // ここに既存の自作コードを置く
-    }
-  </script>
-
-</body>
-</html>
 </body>
 </html>
