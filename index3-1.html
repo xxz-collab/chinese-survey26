@@ -11,9 +11,44 @@
 <title>日本語中訳反応テストその1</title>
 </head>
 <body>
-
+<h1>調査を開始するには下のボタンを押してください</h1>
+<button id="start">開始</button>
 <h2>日本語中訳反応テストその1</h2>
+<script>
+document.getElementById("start").addEventListener("click", function() {
 
+  // jsPsych初期化
+  const jsPsych = initJsPsych({
+    on_finish: function() {
+      // データ送信（GAS）
+      fetch("GAS_WEB_APP_URL", {  // ← ここをあなたのGAS URLに置き換え
+        method: "POST",
+        body: JSON.stringify(jsPsych.data.get().values())
+      });
+    }
+  });
+
+  // タイムライン作成
+  const timeline = [];
+
+  // 例: 質問1（音声再生付き）
+  timeline.push({
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p>あなたは英語が話せますか？</p>",
+    choices: ["次へ"],
+    on_load: function() {
+      const audio = new Audio("https://www.dropbox.com/s/XXXXXX/q1.mp3?raw=1"); // ← 音声URL
+      audio.play();
+    }
+  });
+
+  // 他の質問も同様に timeline.push({...}) で追加
+
+  // 実験開始
+  jsPsych.run(timeline);
+
+});
+</script>
 <!-- 説明・同意 -->
 <div id="consentSection">
 <p>
