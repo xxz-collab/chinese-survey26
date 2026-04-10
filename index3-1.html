@@ -27,8 +27,53 @@
 
 <!-- ID -->
 <div id="idSection" style="display:none;">
-<p>ID（半角英数字のみ　入力必須）：</p>
-<input id="pid" maxlength="10">
+  <p>ID（半角英数字のみ　入力必須）：</p>
+
+  <input id="pid" maxlength="10"
+         pattern="[A-Za-z0-9]+"
+         title="半角英数字のみ入力してください"
+         required>
+
+  <p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
+
+  <button id="idBtn">次へ</button>
+</div>
+
+<script>
+// 入力時に半角英数字以外を自動削除
+document.getElementById("pid").addEventListener("input", function() {
+  this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
+});
+
+// 「次へ」ボタンを押したときのチェック
+document.getElementById("idBtn").addEventListener("click", function() {
+  const id = document.getElementById("pid").value;
+
+  if (id.length === 0) {
+    alert("IDを入力してください");
+    return;
+  }
+
+  if (!/^[A-Za-z0-9]+$/.test(id)) {
+    alert("IDは半角英数字で入力してください");
+    return;
+  }
+
+  // ↓ここに次の画面へ進む処理を書く
+  // 例：
+  // document.getElementById("idSection").style.display = "none";
+  // document.getElementById("nextSection").style.display = "block";
+});
+</script>
+
+</div>
+
+<script>
+document.getElementById("pid").addEventListener("input", function() {
+  // 半角英数字以外を自動削除
+  this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
+});
+</script>
 
 <p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
 <button id="idBtn">次へ</button>
