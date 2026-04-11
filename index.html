@@ -194,6 +194,9 @@ function showQ() {
 
   audio.src = q.audio;
 
+  // ←ここに入れる
+  console.log("PLAY:", q.audio);
+
   audio.onended = () => {
     console.log("AUDIO END");
     startRec(q);
@@ -203,13 +206,13 @@ function showQ() {
     console.error(err);
     alert("音声再生エラー");
   });
-}  
+}
 // =======================
 // 録音開始
 // =======================
 function startRec(q) {
 
-    console.log("START REC");
+  console.log("START REC");
 
   if (!stream) {
     alert("マイクが取得できていません");
@@ -220,10 +223,20 @@ function startRec(q) {
     alert("MediaRecorder非対応です");
     return;
   }
-  recorder = new MediaRecorder(stream);
+
+  try {
+    recorder = new MediaRecorder(stream);
+  } catch (e) {
+    console.error(e);
+    alert("録音開始エラー: " + e.message);
+    return;
+  }
+
   chunks = [];
 
-  recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.ondataavailable = e => {
+    chunks.push(e.data);
+  };
 
   recorder.onstop = async () => {
 
@@ -240,15 +253,8 @@ function startRec(q) {
     setTimeout(showQ, 500);
   };
 
-    try {
-    recorder = new MediaRecorder(stream);
-    recorder.start();
-  } catch (e) {
-    console.error(e);
-    alert("録音開始エラー: " + e.message);
-    return;
-  }
-  
+  recorder.start();
+
   playBeep();
   document.getElementById("recordingStatus").style.display = "block";
 
@@ -267,7 +273,6 @@ function startRec(q) {
     btn.style.display = "none";
   }, MAX_TIME);
 }
-
 
 // =======================
 // アップロード（完全修正版）
