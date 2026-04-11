@@ -56,8 +56,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const DROPBOX_TOKEN = "IMoHujudHP8AAAAAAAAAAWC-CoTYod8KnNRO63ktyC1iWxit_xyKx79ATQ_HNGYY";
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwROLMtJCPovQgYd5LFCB4rt7YbF4KNynJX31iYjH_GBMgZFoE1XDrOKHxiCkifeVnWZw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbylBjEijSerr9SwlLC8IOsfeHC4xAEI-rh4cb3T-HpNV1XL1KR-K0gZShwwK2DD5wtaHQ/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -233,38 +232,30 @@ timer = setTimeout(()=>{
 }
 
 function upload(blob){
-const filename=`${pid}_Q${qIndex}_${Date.now()}.webm`;
 
-fetch("https://content.dropboxapi.com/2/files/upload",{
-  method:"POST",
-  headers:{
-    "Authorization":"Bearer "+DROPBOX_TOKEN,
-    "Dropbox-API-Arg":JSON.stringify({
-      path:"/Apps/ChineseSurvey26/Responses/test1/"+filename,
-      mode:"add",
-      autorename:true
-    }),
-    "Content-Type":"application/octet-stream"
-  },
-  body:blob
+const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
+
+// ★音声（ここが重要）
+fetch(GAS_URL + "?filename=" + encodeURIComponent(filename) + "&test=" + TEST_NUMBER, {
+  method: "POST",
+  body: blob
 })
-.then(r=>r.json())
-.then(d=>console.log("Dropbox:", d))
-.catch(e=>console.error("Dropboxエラー:", e));
+.then(r => r.text())
+.then(t => console.log("UPLOAD:", t))
+.catch(e => console.error("UPLOAD ERROR:", e));
 
-const fd=new FormData();
+// ★回答
+const fd = new FormData();
 fd.append("type","response");
 fd.append("pid",pid);
 fd.append("q",qIndex);
 fd.append("rt",Date.now()-startTime);
+fd.append("test",TEST_NUMBER);
 
-fetch(GAS_URL,{method:"POST",body:fd})
-.then(r=>r.text())
-.then(t=>console.log("GAS:",t))
-.catch(e=>console.error("エラー:",e));
+fetch(GAS_URL,{method:"POST",body:fd});
+
 }
 </script>
 
 </body>
 </html>
-
