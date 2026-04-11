@@ -5,7 +5,7 @@
 <title>日本語中訳反応テストその1</title>
 </head>
 <body>
-<body style="background-color: lightpink;">
+<body style="background-color: lightblue;">
 
 <h2>日本語中訳反応テストその1</h2>
 
@@ -31,7 +31,7 @@
 <p>ID（半角英数字のみ　入力必須）：</p>
 <input id="pid" maxlength="10" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')">
 
-<p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
+<p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回のテスト、すべて同じIDを使用してください。</p>
 <button id="idBtn">次へ</button>
 </div>
 
@@ -57,7 +57,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyDfPnxtYbtEYBEsw-9YTmz2UMX2MvnCdDnrhq_GRhCAg4eoBSIPmA9JPDHlXOK7VDHPA/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwsXLUGRkVIh-MuM3MDfKYct7cYRkDbC0_oJvIeFYnf_VNBXhpkGzDs5muVsdhykbn2XQ/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ずピッと音が鳴り「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -71,7 +71,8 @@ let bg_years, bg_level, bg_stay;
 
 const qs = [
 
-{ text:"1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。 練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1", practice:true},
+{ text:"1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。 
+  練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1", practice:true},
 
   {text:"問題1：「この近くにコンビニ（便利店biànlìdiàn）はありますか？」", audio:"https://www.dropbox.com/scl/fi/i2iu60xhqy1ga6ghhe237/question1-1.mp3?rlkey=ed01vzbl1ektpupado8m4h85u&raw=1"},
   {text:"問題2：「あなたは英語が話せますか？」", audio:"https://www.dropbox.com/scl/fi/3ujgyl20nu3sjz06lesb3/question1-2.mp3?rlkey=3eotntregmx2ata8cc9jfvs1u&raw=1"},
@@ -175,6 +176,8 @@ function sendBG() {
 // =======================
 function showQ() {
 
+  console.log("SHOW Q:", qIndex);
+
   if (qIndex >= qs.length) {
     alert("これでテストは終了です。ご協力ありがとうございました！");
     return;
@@ -186,24 +189,37 @@ function showQ() {
   document.getElementById("qtext").innerText = q.text;
 
   document.getElementById("instruction").innerHTML =
-    "<span style='font-weight:bold;'>" +
-    "音声再生後、自動で録音が始まります" +
-    "</span><br>" +
-    "<span style='color:red;'>● 録音中</span> が表示されてから発話してください";
+    "<b>音声再生後、自動で録音が始まります</b><br>" +
+    "<span style='color:red;'>● 録音中</span>";
 
   audio.src = q.audio;
 
-  audio.onended = () => startRec(q);
+  audio.onended = () => {
+    console.log("AUDIO END");
+    startRec(q);
+  };
 
-  audio.play();
-}
-
-
+  audio.play().catch(err => {
+    console.error(err);
+    alert("音声再生エラー");
+  });
+}  
 // =======================
 // 録音開始
 // =======================
 function startRec(q) {
 
+    console.log("START REC");
+
+  if (!stream) {
+    alert("マイクが取得できていません");
+    return;
+  }
+
+  if (!MediaRecorder.isTypeSupported("audio/webm")) {
+    alert("MediaRecorder非対応です");
+    return;
+  }
   recorder = new MediaRecorder(stream);
   chunks = [];
 
@@ -224,8 +240,15 @@ function startRec(q) {
     setTimeout(showQ, 500);
   };
 
-  recorder.start();
-
+    try {
+    recorder = new MediaRecorder(stream);
+    recorder.start();
+  } catch (e) {
+    console.error(e);
+    alert("録音開始エラー: " + e.message);
+    return;
+  }
+  
   playBeep();
   document.getElementById("recordingStatus").style.display = "block";
 
