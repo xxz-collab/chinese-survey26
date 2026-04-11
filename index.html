@@ -57,7 +57,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbyWgGD4MjB16VqFopcOSXRjSkzRql6X1VuwmL8lJe3ke-ANrwIw-6L0z5W_0jfOAZNjqw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyDfPnxtYbtEYBEsw-9YTmz2UMX2MvnCdDnrhq_GRhCAg4eoBSIPmA9JPDHlXOK7VDHPA/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ずピッと音が鳴り「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -249,33 +249,33 @@ function startRec(q) {
 // =======================
 // アップロード（完全修正版）
 // =======================
-async function upload(blob) {
+async function upload(blob){
 
   const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
 
-  const fdAudio = new FormData();
-  fdAudio.append("file", blob);
-  fdAudio.append("filename", filename);
-  fdAudio.append("test", TEST_NUMBER);
-  fdAudio.append("pid", pid);
-  fdAudio.append("type", "audio");
+  const base64 = await blobToBase64(blob);
 
   await fetch(GAS_URL, {
     method: "POST",
-    mode: "no-cors",
-    body: fdAudio
+    body: JSON.stringify({
+      type: "audio",
+      filename: filename,
+      test: TEST_NUMBER,
+      pid: pid,
+      audio: base64
+    })
   });
 
   console.log("SENT:", filename);
 
-  const fdResponse = new FormData();
-  fdResponse.append("type", "response");
-  fdResponse.append("pid", pid);
-  fdResponse.append("q", qIndex);
-  fdResponse.append("rt", Date.now() - startTime);
-  fdResponse.append("test", TEST_NUMBER);
+  const fd = new FormData();
+  fd.append("type","response");
+  fd.append("pid",pid);
+  fd.append("q",qIndex);
+  fd.append("rt",Date.now()-startTime);
+  fd.append("test",TEST_NUMBER);
 
-  fetch(GAS_URL, { method: "POST", body: fdResponse });
+  fetch(GAS_URL,{method:"POST",body:fd});
 }
 </script>
 
