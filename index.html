@@ -5,7 +5,7 @@
 <title>日本語中訳反応テストその1</title>
 </head>
 <body>
-<body style="background-color: lightpink;">
+<body style="background-color: milkywhite;">
 <h2>日本語中訳反応テストその1</h2>
 
 <!-- 説明・同意 -->
@@ -56,7 +56,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxHJ881YRj1sKYmiCLNmk0NlfFUWnxWKgALz5SgkWdS6T6rIPS26pJ8bPa4DjDiQgLUgQ/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycby2sCl6ZDqlZFc89zRULy_g4lK4wQK1Nxvl4q2TytmVsh2ssl1HzLr0zZzkMJcjvp_aTw/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -254,25 +254,20 @@ async function upload(blob){
 
   const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
 
-  const base64 = await blobToBase64(blob);
+  const fd = new FormData();
+  fd.append("file", blob);
+  fd.append("filename", filename);
+  fd.append("test", TEST_NUMBER);
+  fd.append("pid", pid);
+  fd.append("type", "audio");
 
-  // ★ GASへ送信（CORS回避版）
   await fetch(GAS_URL, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      filename: filename,
-      test: TEST_NUMBER,
-      pid: pid,
-      audio: base64
-    })
-  })
-  .then(r => r.text())
-  .then(t => console.log("UPLOAD:", t))
-  .catch(e => console.error("UPLOAD ERROR:", e));
+    mode: "no-cors",
+    body: fd
+  });
 
+  console.log("SENT:", filename);
 
   // ★ 回答ログ（そのまま維持）
   const fd = new FormData();
