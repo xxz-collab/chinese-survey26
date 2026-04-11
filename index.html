@@ -191,71 +191,99 @@ if(qIndex === 0){
 
 function startRec(q){
 
-// ここが変わった（streamを使う）
-recorder = new MediaRecorder(stream);
-chunks = [];
+  recorder = new MediaRecorder(stream);
+  chunks = [];
 
-recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.ondataavailable = e => chunks.push(e.data);
 
-recorder.onstop = ()=>{
-  clearTimeout(timer);
+  recorder.onstop = async ()=>{
 
-  // 👇これを追加（ここ！）
-  document.getElementById("recordingStatus").style.display = "none";
+    clearTimeout(timer);
 
-  const blob = new Blob(chunks,{type:"audio/webm"});
+    document.getElementById("recordingStatus").style.display = "none";
 
-  if(!q.practice) upload(blob);
+    const blob = new Blob(chunks,{type:"audio/webm"});
 
-  qIndex++;
-  setTimeout(showQ,500);
-};
+    if(!q.practice){
+      await upload(blob);
+    }
 
-recorder.start();
-playBeep(); // ←これ追加
-document.getElementById("recordingStatus").style.display = "block";
-startTime = Date.now();
+    qIndex++;
+    setTimeout(showQ,500);
+  };
 
-const btn = document.getElementById("stopBtn");
-btn.style.display = "inline";
+  recorder.start();
 
-btn.onclick = ()=>{
-  recorder.stop();
-  btn.style.display = "none";
-};
+  playBeep();
 
-timer = setTimeout(()=>{
-  if(recorder.state==="recording") recorder.stop();
-  btn.style.display="none";
-}, MAX_TIME);
+  document.getElementById("recordingStatus").style.display = "block";
 
-}
+  startTime = Date.now();
 
-function upload(blob){
+  const btn = document.getElementById("stopBtn");
+  btn.style.display = "inline";
 
-const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
+  btn.onclick = ()=>{
+    recorder.stop();
+    btn.style.display = "none";
+  };
 
-// ★音声（ここが重要）
-fetch(GAS_URL + "?filename=" + encodeURIComponent(filename) + "&test=" + TEST_NUMBER, {
-  method: "POST",
-  body: blob
-})
-.then(r => r.text())
-.then(t => console.log("UPLOAD:", t))
-.catch(e => console.error("UPLOAD ERROR:", e));
-
-// ★回答
-const fd = new FormData();
-fd.append("type","response");
-fd.append("pid",pid);
-fd.append("q",qIndex);
-fd.append("rt",Date.now()-startTime);
-fd.append("test",TEST_NUMBER);
-
-fetch(GAS_URL,{method:"POST",body:fd});
+  timer = setTimeout(()=>{
+    if(recorder.state==="recording") recorder.stop();
+    btn.style.display="none";
+  }, MAX_TIME);
 
 }
-</script>
+
+
+// ===============================
+// ★ ここが完全差し替え版 upload
+// ===============================
+
+function blobToBase64(blob){
+  return new Promise(resolve=>{
+    const reader = new FileReader();
+    reader.onloadend = ()=>{
+      resolve(reader.result.split(",")[1]);
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+
+async function upload(blob){
+
+  const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
+
+  const base64 = await blobToBase64(blob);
+
+  // ★ GASへ送信（CORS回避版）
+  await fetch(GAS_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      filename: filename,
+      test: TEST_NUMBER,
+      pid: pid,
+      audio: base64
+    })
+  })
+  .then(r => r.text())
+  .then(t => console.log("UPLOAD:", t))
+  .catch(e => console.error("UPLOAD ERROR:", e));
+
+
+  // ★ 回答ログ（そのまま維持）
+  const fd = new FormData();
+  fd.append("type","response");
+  fd.append("pid",pid);
+  fd.append("q",qIndex);
+  fd.append("rt",Date.now()-startTime);
+  fd.append("test",TEST_NUMBER);
+
+  fetch(GAS_URL,{method:"POST",body:fd});
+}</script>
 
 </body>
 </html>
