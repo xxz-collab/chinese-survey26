@@ -56,7 +56,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycby2sCl6ZDqlZFc89zRULy_g4lK4wQK1Nxvl4q2TytmVsh2ssl1HzLr0zZzkMJcjvp_aTw/exec";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwgn1xiv2QdSDFvV9giwnFBRNwTSRAYKy1p_UOXvaoer9b9l6tSdBJBqL17Forq72d5-Q/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -138,15 +138,18 @@ function playBeep(){
 }
 
 function sendBG(){
-const fd=new FormData();
-fd.append("type","background");
-fd.append("pid",pid);
-fd.append("years",document.getElementById("years").value);
-fd.append("level",document.getElementById("level").value);
-fd.append("stay",document.getElementById("stay").value);
-fetch(GAS_URL,{method:"POST",body:fd});
-}
 
+  const fd = new FormData();
+
+  fd.append("type","background");
+  fd.append("pid",pid);
+  fd.append("years",document.getElementById("years").value);
+  fd.append("level",document.getElementById("level").value);
+  fd.append("stay",document.getElementById("stay").value);
+  fd.append("test",TEST_NUMBER);
+
+  fetch(GAS_URL,{method:"POST",body:fd});
+}
 function showQ(){
 if(qIndex>=qs.length){
 alert("これでテストは終了です。ご協力、ありがとうございました！");
@@ -250,35 +253,37 @@ function blobToBase64(blob){
   });
 }
 
-async function upload(blob){
+aasync function upload(blob){
 
   const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
 
-  const fd = new FormData();
-  fd.append("file", blob);
-  fd.append("filename", filename);
-  fd.append("test", TEST_NUMBER);
-  fd.append("pid", pid);
-  fd.append("type", "audio");
+  // 音声送信
+  const fdAudio = new FormData();
+  fdAudio.append("file", blob);
+  fdAudio.append("filename", filename);
+  fdAudio.append("test", TEST_NUMBER);
+  fdAudio.append("pid", pid);
+  fdAudio.append("type", "audio");
 
   await fetch(GAS_URL, {
     method: "POST",
     mode: "no-cors",
-    body: fd
+    body: fdAudio
   });
 
   console.log("SENT:", filename);
 
-  // ★ 回答ログ（そのまま維持）
-  const fd = new FormData();
-  fd.append("type","response");
-  fd.append("pid",pid);
-  fd.append("q",qIndex);
-  fd.append("rt",Date.now()-startTime);
-  fd.append("test",TEST_NUMBER);
+  // 回答ログ
+  const fdResponse = new FormData();
+  fdResponse.append("type","response");
+  fdResponse.append("pid",pid);
+  fdResponse.append("q",qIndex);
+  fdResponse.append("rt",Date.now()-startTime);
+  fdResponse.append("test",TEST_NUMBER);
 
-  fetch(GAS_URL,{method:"POST",body:fd});
-}</script>
+  fetch(GAS_URL,{method:"POST",body:fdResponse});
+}
+</script>
 
 </body>
 </html>
