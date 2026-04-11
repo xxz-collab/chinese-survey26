@@ -1,38 +1,270 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        h1 {
-            color: #333;
-            border-bottom: 2px solid #ccc;
-            padding-bottom: 10px;
-        }
-        .section {
-            margin: 20px 0;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>日本語中訳反応テストその1</title>
 </head>
 <body>
-    <h1>Welcome to My Website</h1>
-    
-    <div class="section">
-        <h2>About</h2>
-        <p>こちらにサイトの説明を記載してください。</p>
-    </div>
 
-    <div class="section">
-        <h2>Contact</h2>
-        <p>連絡先情報があれば記載してください。</p>
-    </div>
+<h2>日本語中訳反応テストその1</h2>
+
+<!-- 説明・同意 -->
+<div id="consentSection">
+<p>
+この調査は、日本語の問題文を聞いて（または読んで）から中国語に翻訳するまでにかかる時間を調べることを目的としています。回答内容や発音の正確さを評価するものではありませんので、安心してご参加ください。その場で言い直してもかまいません。<br>
+本調査にご協力いただける場合、今回のテストに加えて、今後2回の短いテスト（各回10問、所要時間約5分）にもご参加いただきます。<br>
+本調査は匿名で実施され、個人が特定されることはありません。収集された音声データがそのまま公開されることはありません。学会発表等で音声を使用する場合には、必ず変声処理（音声変換）を行います。<br>
+また、本調査への参加・不参加や回答内容が、あなたの所属する大学での成績や評価に影響することは一切ありませんのでご安心ください。<br><br>
+
+【研究責任者】西　香織<br>
+【所属】明治学院大学<br>
+【問い合わせ先】nishik@gen.meijigakuin.ac.jp
+</p>
+
+<button id="agree">同意する</button>
+<button id="disagree">同意しない</button>
+</div>
+
+<!-- ID -->
+<div id="idSection" style="display:none;">
+<p>ID（半角英数字のみ　入力必須）：</p>
+<input id="pid" maxlength="10" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')">
+
+<p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
+<button id="idBtn">次へ</button>
+</div>
+
+<!-- 背景質問 -->
+<div id="bgSection" style="display:none;">
+<p>背景質問（入力必須　なしの場合は「なし」と入力してください）</p>
+中国語学習歴（年）：<input id="years"><br>
+HSKレベル／中検級：<input id="level"><br>
+中国語圏滞在歴：<input id="stay"><br>
+<button id="bgBtn">開始</button>
+</div>
+
+<!-- 実験 -->
+<div id="expSection" style="display:none;">
+<p id="instruction"></p>
+<p id="recordingStatus" style="display:none; color:red; font-weight:bold;">
+● 録音中です
+</p>
+<p id="qtext" style="font-size:20px;font-weight:bold;"></p>
+<audio id="audio"></audio>
+<p id="status"></p>
+<button id="stopBtn" style="display:none;">録音終了</button>
+</div>
+
+<script>
+const DROPBOX_TOKEN = "sl.u.AGaLkQMGNRfYuU9HcuyrMejF40Ftw5GHEdV7Wrz8j_cQTcDscDdVHuPuDYhHjEuX-d-kz5xgQXgm6AzeJG4feUi0thVB9aCa025p9LsJHNQqa47m1HdfVnb8w6ZECZ08qxIOMz4wmvvT8hpvZrCcZHWI0r9xOVsPPjuuk1yTTtlhOtiiBUkMM8QkpjL16kD1QUokxVthAi988BgJKe3eLSL1jZRYTCaihgLXMxJCEJcxF3QKg5NV0M7EI2KWQBGoVYHmd6LeF5pDSQ6eLwZZsP3jTijVQyiO-kUorLF5FZ8oQ7DNrWmMgpBsXTmaGNZefafhW_hVw5hbz4U7mcKjnPbweT1-7t46FKtYA1SI8DeaZ27d1oRyWz66qR58aNM8rJFk-4PQiCxsBB1sRxOhlhVqKy7D2a8niaLMIoe6SEGXgqmcoKz9asHCw8BcLl67-4ruciarHoUDMmY9ndR-0p-L_iJXuJ9yT8PpZnqKiCZY62pHEK7uwH-LqQgSRYlqeKaoGNNw1cjgYwTAyIjADQWAi-eS5rdRubAJ-QI0CBtBHjtzGicdYu_cz9WsZ-0TyQLu-fGZFc9pEjVCcAvdCdVnbhevupVYWhygRdzMkSqR5hjkvAEWBT0PhWbPMaLftptR0qd3nlYX1ztx9H2oVZMGn1fDDE3sfSosqLyiUPb8goEmASfxPxojB-5-93dbnCPWkDrKPBThXTYNwzVSJ_A9_ZSPr5Xs4-ClVPHy8d1ubq8W0Q5Vxa6SYLux78mgLn2Grn-ETq4CBHgi2NRMpFrycaA7uJ0k_5d2rajy44uWZLYd8pzJo2lF7Iyi00F1cvGS-Ppcjzf9CwJbfQuGGJsUyKOxxZLGY-ubzuedv-bozXspSxVukjQSsGYqVaEkmwgeWuVdtThLOQK9bvG47tPeOZoMP8HHyRuuha2gZS1gZtGpDYdCr78wWgJFFM8ODnv6kvC7WJhWNV7dBBDykHK4hN9oHXS3y_Va49Gz8VhkrSQKYNsip15h8wbJBKOkeElZjbTSUJFBB9OS7ssnAEeaJWJcWmEMLrHykb7eldgmfsx0IMkvlH40y6ueI9tmxOQpycpb4DFDfVJdTKZ9JyU5e-9EnD700X5VN43YJaNggdeSo9E6ULVc-w5or_s3V3xuQpH-eut3TyselJjqTxE5dS37YauikppIN1y17mPqRFpqQDeOeqYSSN-_QDbLU_ivNTR324Q9hgK4UDt4nVKRduJG3SH8OCM1fDerGQdhMbjX0WM8llWNpufp487P9lxvpjxr0ozgnftkUBCmpLZ7DOStBA3bzTQlfrpvRbGbHw";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwROLMtJCPovQgYd5LFCB4rt7YbF4KNynJX31iYjH_GBMgZFoE1XDrOKHxiCkifeVnWZw/exec";
+const MAX_TIME = 25000;
+const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
+const TEST_NUMBER = 1; // ← テスト1なら1
+
+let pid="";
+let qIndex=0;
+let recorder, chunks=[], timer, startTime;
+let stream; // ←これを追加
+
+let bg_years, bg_level, bg_stay;
+
+const qs = [
+
+{ text:"1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。 練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1", practice:true},
+
+  {text:"問題1：「この近くにコンビニ（便利店biànlìdiàn）はありますか？」", audio:"https://www.dropbox.com/scl/fi/i2iu60xhqy1ga6ghhe237/question1-1.mp3?rlkey=ed01vzbl1ektpupado8m4h85u&raw=1"},
+  {text:"問題2：「あなたは英語が話せますか？」", audio:"https://www.dropbox.com/scl/fi/3ujgyl20nu3sjz06lesb3/question1-2.mp3?rlkey=3eotntregmx2ata8cc9jfvs1u&raw=1"},
+  {text:"問題3：「パスポート（护照hùzhào）を見せてください。」", audio:"https://www.dropbox.com/scl/fi/i5ytt86n36edtfghzu1ms/question1-3.mp3?rlkey=f9yuerk6mbt34cp9jcws9fx8i&raw=1"},
+  {text:"問題4：「ここで写真を撮ってはいけません。」", audio:"https://www.dropbox.com/scl/fi/72q9qwsi35zb6x14vhqgy/question1-4.mp3?rlkey=vxcccuh6sb0nb6aweq2whym2g&raw=1"},
+  {text:"問題5：「日本は韓国（韩国Hánguó）より人口が多いです。」", audio:"https://www.dropbox.com/scl/fi/n55uss3rp5vt5yb4kl3fb/question1-5.mp3?rlkey=8g4hto7wdueb96s26545qa23w&raw=1"},
+  {text:"問題6：「今日の午後は雨が降るはずです。」", audio:"https://www.dropbox.com/scl/fi/hi6uzajxeuguildywgwl7/question1-6.mp3?rlkey=7gitu40hl9gddkasv1945oigr&raw=1"},
+  {text:"問題7：「この店は夜8時に閉まります。」", audio:"https://www.dropbox.com/scl/fi/s6ylafl1t175cnqfz9rls/question1-7.mp3?rlkey=yidqzjpuolp4n8itraeet1mqj&raw=1"},
+  {text:"問題8：「私は昨日、12時間寝ました。」", audio:"https://www.dropbox.com/scl/fi/yru9jwitbqc4wy1dve7ty/question1-8.mp3?rlkey=1oew9qx8uq5x7n9810te1f9ia&raw=1"},
+  {text:"問題9：「あなたはコーヒーを飲みますか、それともお茶を飲みますか？」", audio:"https://www.dropbox.com/scl/fi/0lxf69d72s8qu90tddtzv/question1-9.mp3?rlkey=jpejl28rumsringbonf48enpe&raw=1"},
+  {text:"問題10：「私はケータイを家に忘れました。」", audio:"https://www.dropbox.com/scl/fi/i6k2gvqsb4vb7htg90pmy/question1-10.mp3?rlkey=cdzz6fsq60jlei4kec7s4ugze&raw=1"}
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+// 同意ボタン
+document.getElementById("agree").onclick=()=>{
+document.getElementById("consentSection").style.display="none";
+document.getElementById("idSection").style.display="block";
+};
+
+document.getElementById("disagree").onclick=()=>alert("終了しました");
+
+document.getElementById("idBtn").onclick=()=>{
+pid=document.getElementById("pid").value.trim();
+if(!pid){alert("IDを入力してください");return;}
+document.getElementById("idSection").style.display="none";
+document.getElementById("bgSection").style.display="block";
+};
+
+document.getElementById("bgBtn").onclick=()=>{
+bg_years = document.getElementById("years").value;
+bg_level = document.getElementById("level").value;
+bg_stay = document.getElementById("stay").value;
+
+navigator.mediaDevices.getUserMedia({audio:true})
+.then(s=>{
+  stream = s;
+
+  sendBG();
+  document.getElementById("bgSection").style.display="none";
+  document.getElementById("expSection").style.display="block";
+  showQ();
+})
+.catch(()=>{
+  alert("マイクを許可してください");
+});
+
+};
+}); // DOMContentLoaded
+
+function playBeep(){
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+
+  osc.type = "sine";        // 音の種類
+  osc.frequency.value = 1000; // 周波数（ピッ音）
+  gain.gain.value = 0.2;    // 音量（0〜1）
+
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.15); // 0.15秒だけ鳴らす
+}
+
+function sendBG(){
+const fd=new FormData();
+fd.append("type","background");
+fd.append("pid",pid);
+fd.append("years",document.getElementById("years").value);
+fd.append("level",document.getElementById("level").value);
+fd.append("stay",document.getElementById("stay").value);
+fetch(GAS_URL,{method:"POST",body:fd});
+}
+
+function showQ(){
+if(qIndex>=qs.length){
+alert("これでテストは終了です。ご協力、ありがとうございました！");
+return;
+}
+
+const q=qs[qIndex];
+const audio=document.getElementById("audio");
+
+document.getElementById("qtext").innerText=q.text;
+
+if(qIndex===0){
+  document.getElementById("instruction").innerHTML =
+    "<b>（練習問題）</b><br><br>" +
+    "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
+    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
+    "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
+    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
+}else{
+  document.getElementById("instruction").innerHTML =
+    "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
+    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
+    "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
+    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
+}
+
+audio.src = q.audio;
+audio.onended = null;
+audio.addEventListener("ended",()=>startRec(q),{once:true});
+
+// 👇ここを追加
+if(qIndex === 0){
+  // 練習問題だけ10秒後に再生
+  setTimeout(()=>{
+    audio.play();
+  }, 8000);
+}else{
+  // 本番はすぐ再生
+  audio.play();
+}
+}
+
+function startRec(q){
+
+// ここが変わった（streamを使う）
+recorder = new MediaRecorder(stream);
+chunks = [];
+
+recorder.ondataavailable = e => chunks.push(e.data);
+
+recorder.onstop = ()=>{
+  clearTimeout(timer);
+
+  // 👇これを追加（ここ！）
+  document.getElementById("recordingStatus").style.display = "none";
+
+  const blob = new Blob(chunks,{type:"audio/webm"});
+
+  if(!q.practice) upload(blob);
+
+  qIndex++;
+  setTimeout(showQ,500);
+};
+
+recorder.start();
+playBeep(); // ←これ追加
+document.getElementById("recordingStatus").style.display = "block";
+startTime = Date.now();
+
+const btn = document.getElementById("stopBtn");
+btn.style.display = "inline";
+
+btn.onclick = ()=>{
+  recorder.stop();
+  btn.style.display = "none";
+};
+
+timer = setTimeout(()=>{
+  if(recorder.state==="recording") recorder.stop();
+  btn.style.display="none";
+}, MAX_TIME);
+
+}
+
+function upload(blob){
+const filename=`${pid}_Q${qIndex}_${Date.now()}.webm`;
+
+fetch("https://content.dropboxapi.com/2/files/upload",{
+  method:"POST",
+  headers:{
+    "Authorization":"Bearer "+DROPBOX_TOKEN,
+    "Dropbox-API-Arg":JSON.stringify({
+      path:"/Apps/ChineseSurvey26/Responses/test1/"+filename,
+      mode:"add",
+      autorename:true
+    }),
+    "Content-Type":"application/octet-stream"
+  },
+  body:blob
+})
+.then(r=>r.json())
+.then(d=>console.log("Dropbox:", d))
+.catch(e=>console.error("Dropboxエラー:", e));
+
+const fd=new FormData();
+fd.append("type","response");
+fd.append("pid",pid);
+fd.append("q",qIndex);
+fd.append("rt",Date.now()-startTime);
+
+fetch(GAS_URL,{method:"POST",body:fd})
+.then(r=>r.text())
+.then(t=>console.log("GAS:",t))
+.catch(e=>console.error("エラー:",e));
+}
+</script>
+
 </body>
 </html>
+
