@@ -1,3 +1,4 @@
+<button onclick="startExperiment()">開始</button>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -268,3 +269,9 @@ fetch(GAS_URL,{method:"POST",body:fd})
 </body>
 </html>
 
+<script>
+function startExperiment(){
+  document.getElementById("topPage").style.display = "none";
+  jsPsych.run(timeline);
+}
+</script>
