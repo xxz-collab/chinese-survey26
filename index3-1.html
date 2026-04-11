@@ -27,58 +27,12 @@
 
 <!-- ID -->
 <div id="idSection" style="display:none;">
-  <p>ID（半角英数字のみ　入力必須）：</p>
-
-  <input id="pid" maxlength="10"
-         pattern="[A-Za-z0-9]+"
-         title="半角英数字のみ入力してください"
-         required>
-
-  <p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
-
-  <button id="idBtn">次へ</button>
-</div>
-
-<script>
-// 入力時に半角英数字以外を自動削除
-document.getElementById("pid").addEventListener("input", function() {
-  this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
-});
-
-// 「次へ」ボタンを押したときのチェック
-document.getElementById("idBtn").addEventListener("click", function() {
-  const id = document.getElementById("pid").value;
-
-  if (id.length === 0) {
-    alert("IDを入力してください");
-    return;
-  }
-
-  if (!/^[A-Za-z0-9]+$/.test(id)) {
-    alert("IDは半角英数字で入力してください");
-    return;
-  }
-
-  // ↓ここに次の画面へ進む処理を書く
-  // 例：
-  // document.getElementById("idSection").style.display = "none";
-  // document.getElementById("nextSection").style.display = "block";
-});
-</script>
-
-</div>
-
-<script>
-document.getElementById("pid").addEventListener("input", function() {
-  // 半角英数字以外を自動削除
-  this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
-});
-</script>
+<p>ID（半角英数字のみ　入力必須）：</p>
+<input id="pid" maxlength="10" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '')">
 
 <p>※ニックネームなど。ただし、個人が特定できる名前は不可。／3回すべて同じIDを使用してください。</p>
 <button id="idBtn">次へ</button>
 </div>
-
 
 <!-- 背景質問 -->
 <div id="bgSection" style="display:none;">
@@ -102,7 +56,7 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-const DROPBOX_TOKEN = "sl.u.AGZ1oH0jblKXWjVpRIl6ot7ljx60EXg9ah6wr7ccWfA_uhQebSuIXtEUAWwbM3UEvlkouL3DLmjo664bhpE_4WdPLRKMv_xFu8uyogW0oTDq3j7V2TzfcurTbrSWaOjMqmYZOPlXOC1ocFov2TDdFiaNRw3XHUOI3x6C9KoPuJcDgg_gWvK-qW7wWLN2xTg5Mp9N7oBiVYQsjSZA6_eufvTOI66JerZzWTHjdrQMNtahCwFDYL-cyqaUUOrQQjxOKR2BtejSUKg8jp78TdRmjk0wjW76d0ep9hauAmlt6I8GIEEVin5O4BAAZYS-zBZjndMmHeRFEgtuneq4MWCwN1NXvRv9loCykgJeRoFbz7Tu9QVnlaCEFV2U_Di6V_5uEKkmVlsENgL7xRhYUd8tcOf0BwQ64rZhr7SeIWsxU95ziyOYZMVSIgk91iAHvK0O0dF1vnFfGiDBmg8nKGyY4Dz8KDIT7nB7s3tJw4KiN9LQBfw-2wQRK8n_AyZCXXwwG7I0etkIXACbO0Mqoy7IYkj10r-QeIMd2yVUSLjw9srvdie0RG10JmrIjJ8F34whKk_7d9-n9mZoOb6gs9uVUmzWCe-EZeyCiHCPOWJGbcc1SNd42IF00sKXKjbxUxjQk4czDwDGbtze_tIvoXEL-vboWLNMtteSiq5yxTyriblG_AfPok4kbTcX9i-xYaK_4_aMuW0j_NE_Wr4MmzWAyl6_arUtsYhchXAL9KD9OnA6UJ03H3JdgGjJPDUGc8l8xBdbV50gkfJCUci74ZdayFvwtF36TlJVkT7xm9gvGZSEXP4nFub4thkaLBsRu1NyTYedJ0-oPdoTZ4Plc6HHLYznOoiz759yvtTuiJW6RNNJutSM3YKFgHzdw9n5MOe6lffbp7pIZ0E8wgmJwygwaYD9pusnuOCQMXptmdGIsiYgum8T-TQoMlpeXFs9JEgLes2BCPIwOyjvHnz5yB9c_V_0Hq82gRxlc7yqfUvsusjnmKaqsl3QWMi1fgJOF4JFwpX7Y1Zxz5_J3o_w4GaOP3e_0_Ph6K8rXMCSifvrRHiaqqdO1S9D6l36u2vX5mIx5YIKcVwFqA99hxPfvBPxzOphBf6lgKtb7vVwM6l1Z-j5PIzZjV_xVZRJVKGSaut_WolhD1387OFW67Fx6jhGIHTypN9GkhiFbE9rVsj9LrdsJ0GYkKY3zgIGzGGtWJh-Sbfw-E4-F9AO7TYWgw3romnOVYy-BpyQW6s26BHYcVh9B1BRtkGT1_4AcxSA9HXf47C52wdAEcK4NXmJvYOVpOOyZ0XSbgkiDr2gfWXc1HQ90g";
+const DROPBOX_TOKEN = "sl.u.AGaLkQMGNRfYuU9HcuyrMejF40Ftw5GHEdV7Wrz8j_cQTcDscDdVHuPuDYhHjEuX-d-kz5xgQXgm6AzeJG4feUi0thVB9aCa025p9LsJHNQqa47m1HdfVnb8w6ZECZ08qxIOMz4wmvvT8hpvZrCcZHWI0r9xOVsPPjuuk1yTTtlhOtiiBUkMM8QkpjL16kD1QUokxVthAi988BgJKe3eLSL1jZRYTCaihgLXMxJCEJcxF3QKg5NV0M7EI2KWQBGoVYHmd6LeF5pDSQ6eLwZZsP3jTijVQyiO-kUorLF5FZ8oQ7DNrWmMgpBsXTmaGNZefafhW_hVw5hbz4U7mcKjnPbweT1-7t46FKtYA1SI8DeaZ27d1oRyWz66qR58aNM8rJFk-4PQiCxsBB1sRxOhlhVqKy7D2a8niaLMIoe6SEGXgqmcoKz9asHCw8BcLl67-4ruciarHoUDMmY9ndR-0p-L_iJXuJ9yT8PpZnqKiCZY62pHEK7uwH-LqQgSRYlqeKaoGNNw1cjgYwTAyIjADQWAi-eS5rdRubAJ-QI0CBtBHjtzGicdYu_cz9WsZ-0TyQLu-fGZFc9pEjVCcAvdCdVnbhevupVYWhygRdzMkSqR5hjkvAEWBT0PhWbPMaLftptR0qd3nlYX1ztx9H2oVZMGn1fDDE3sfSosqLyiUPb8goEmASfxPxojB-5-93dbnCPWkDrKPBThXTYNwzVSJ_A9_ZSPr5Xs4-ClVPHy8d1ubq8W0Q5Vxa6SYLux78mgLn2Grn-ETq4CBHgi2NRMpFrycaA7uJ0k_5d2rajy44uWZLYd8pzJo2lF7Iyi00F1cvGS-Ppcjzf9CwJbfQuGGJsUyKOxxZLGY-ubzuedv-bozXspSxVukjQSsGYqVaEkmwgeWuVdtThLOQK9bvG47tPeOZoMP8HHyRuuha2gZS1gZtGpDYdCr78wWgJFFM8ODnv6kvC7WJhWNV7dBBDykHK4hN9oHXS3y_Va49Gz8VhkrSQKYNsip15h8wbJBKOkeElZjbTSUJFBB9OS7ssnAEeaJWJcWmEMLrHykb7eldgmfsx0IMkvlH40y6ueI9tmxOQpycpb4DFDfVJdTKZ9JyU5e-9EnD700X5VN43YJaNggdeSo9E6ULVc-w5or_s3V3xuQpH-eut3TyselJjqTxE5dS37YauikppIN1y17mPqRFpqQDeOeqYSSN-_QDbLU_ivNTR324Q9hgK4UDt4nVKRduJG3SH8OCM1fDerGQdhMbjX0WM8llWNpufp487P9lxvpjxr0ozgnftkUBCmpLZ7DOStBA3bzTQlfrpvRbGbHw";
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwROLMtJCPovQgYd5LFCB4rt7YbF4KNynJX31iYjH_GBMgZFoE1XDrOKHxiCkifeVnWZw/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
@@ -117,7 +71,7 @@ let bg_years, bg_level, bg_stay;
 
 const qs = [
 
-{ text:"1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。　練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1", practice:true},
+{ text:"1つ目の音声は練習です。与えられた日本語を中国語に訳しましょう。 練習：「名前はなんて言うんですか？」", audio:"https://www.dropbox.com/scl/fi/oy9rgp4hyx04by4pkwxaa/question1-0.mp3?rlkey=91qp5dh8pg0v2ce5u2n9bc33h&raw=1", practice:true},
 
   {text:"問題1：「この近くにコンビニ（便利店biànlìdiàn）はありますか？」", audio:"https://www.dropbox.com/scl/fi/i2iu60xhqy1ga6ghhe237/question1-1.mp3?rlkey=ed01vzbl1ektpupado8m4h85u&raw=1"},
   {text:"問題2：「あなたは英語が話せますか？」", audio:"https://www.dropbox.com/scl/fi/3ujgyl20nu3sjz06lesb3/question1-2.mp3?rlkey=3eotntregmx2ata8cc9jfvs1u&raw=1"},
@@ -132,24 +86,20 @@ const qs = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("agree").onclick = () => {
-    document.getElementById("consentSection").style.display = "none";
-    document.getElementById("idSection").style.display = "block";
-  };
+// 同意ボタン
+document.getElementById("agree").onclick=()=>{
+document.getElementById("consentSection").style.display="none";
+document.getElementById("idSection").style.display="block";
+};
 
-  document.getElementById("disagree").onclick = () => alert("終了しました");
+document.getElementById("disagree").onclick=()=>alert("終了しました");
 
-  document.getElementById("idBtn").onclick = () => {
-    pid = document.getElementById("pid").value.trim();
-    if (!pid) { alert("IDを入力してください"); return; }
-    document.getElementById("idSection").style.display = "none";
-    document.getElementById("bgSection").style.display = "block";
-  };
-
-  document.getElementById("bgBtn").onclick = () => {
-    // 省略：マイク許可・背景質問処理
-  };
-});
+document.getElementById("idBtn").onclick=()=>{
+pid=document.getElementById("pid").value.trim();
+if(!pid){alert("IDを入力してください");return;}
+document.getElementById("idSection").style.display="none";
+document.getElementById("bgSection").style.display="block";
+};
 
 document.getElementById("bgBtn").onclick=()=>{
 bg_years = document.getElementById("years").value;
@@ -170,6 +120,7 @@ navigator.mediaDevices.getUserMedia({audio:true})
 });
 
 };
+}); // DOMContentLoaded
 
 function playBeep(){
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -314,6 +265,6 @@ fetch(GAS_URL,{method:"POST",body:fd})
 }
 </script>
 
-
 </body>
 </html>
+
