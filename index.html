@@ -5,7 +5,7 @@
 <title>日本語中訳反応テストその1</title>
 </head>
 <body>
-<body style="background-color: lightpink;">
+<body style="background-color: lightblue;">
 
 <h2>日本語中訳反応テストその1</h2>
 
@@ -86,141 +86,147 @@ const qs = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-// 同意ボタン
-document.getElementById("agree").onclick=()=>{
-document.getElementById("consentSection").style.display="none";
-document.getElementById("idSection").style.display="block";
-};
 
-document.getElementById("disagree").onclick=()=>alert("終了しました");
+  // 同意ボタン
+  document.getElementById("agree").onclick = () => {
+    document.getElementById("consentSection").style.display = "none";
+    document.getElementById("idSection").style.display = "block";
+  };
 
-document.getElementById("idBtn").onclick=()=>{
-pid=document.getElementById("pid").value.trim();
-if(!pid){alert("IDを入力してください");return;}
-document.getElementById("idSection").style.display="none";
-document.getElementById("bgSection").style.display="block";
-};
+  document.getElementById("disagree").onclick = () => {
+    alert("終了しました");
+  };
 
-document.getElementById("bgBtn").onclick=()=>{
-bg_years = document.getElementById("years").value;
-bg_level = document.getElementById("level").value;
-bg_stay = document.getElementById("stay").value;
+  document.getElementById("idBtn").onclick = () => {
+    pid = document.getElementById("pid").value.trim();
+    if (!pid) {
+      alert("IDを入力してください");
+      return;
+    }
+    document.getElementById("idSection").style.display = "none";
+    document.getElementById("bgSection").style.display = "block";
+  };
 
-navigator.mediaDevices.getUserMedia({audio:true})
-.then(s=>{
-  stream = s;
+  document.getElementById("bgBtn").onclick = () => {
 
-  sendBG();
-  document.getElementById("bgSection").style.display="none";
-  document.getElementById("expSection").style.display="block";
-  showQ();
-})
-.catch(()=>{
-  alert("マイクを許可してください");
+    bg_years = document.getElementById("years").value;
+    bg_level = document.getElementById("level").value;
+    bg_stay = document.getElementById("stay").value;
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(s => {
+        stream = s;
+
+        sendBG();
+
+        document.getElementById("bgSection").style.display = "none";
+        document.getElementById("expSection").style.display = "block";
+
+        showQ();
+      })
+      .catch(() => {
+        alert("マイクを許可してください");
+      });
+  };
+
 });
 
-};
-}); // DOMContentLoaded
 
-function playBeep(){
+// =======================
+// 音
+// =======================
+function playBeep() {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
 
-  osc.type = "sine";        // 音の種類
-  osc.frequency.value = 1000; // 周波数（ピッ音）
-  gain.gain.value = 0.2;    // 音量（0〜1）
+  osc.type = "sine";
+  osc.frequency.value = 1000;
+  gain.gain.value = 0.2;
 
   osc.connect(gain);
   gain.connect(ctx.destination);
 
   osc.start();
-  osc.stop(ctx.currentTime + 0.15); // 0.15秒だけ鳴らす
+  osc.stop(ctx.currentTime + 0.15);
 }
 
-function sendBG(){
+
+// =======================
+// 背景送信
+// =======================
+function sendBG() {
 
   const fd = new FormData();
 
-  fd.append("type","background");
-  fd.append("pid",pid);
-  fd.append("years",document.getElementById("years").value);
-  fd.append("level",document.getElementById("level").value);
-  fd.append("stay",document.getElementById("stay").value);
-  fd.append("test",TEST_NUMBER);
+  fd.append("type", "background");
+  fd.append("pid", pid);
+  fd.append("years", document.getElementById("years").value);
+  fd.append("level", document.getElementById("level").value);
+  fd.append("stay", document.getElementById("stay").value);
+  fd.append("test", TEST_NUMBER);
 
-  fetch(GAS_URL,{method:"POST",body:fd});
+  fetch(GAS_URL, { method: "POST", body: fd });
 }
 
-function showQ(){
-if(qIndex>=qs.length){
-alert("これでテストは終了です。ご協力、ありがとうございました！");
-return;
-}
 
-const q=qs[qIndex];
-const audio=document.getElementById("audio");
+// =======================
+// 質問表示
+// =======================
+function showQ() {
 
-document.getElementById("qtext").innerText=q.text;
+  if (qIndex >= qs.length) {
+    alert("これでテストは終了です。ご協力ありがとうございました！");
+    return;
+  }
 
-if(qIndex===0){
+  const q = qs[qIndex];
+  const audio = document.getElementById("audio");
+
+  document.getElementById("qtext").innerText = q.text;
+
   document.getElementById("instruction").innerHTML =
-    "<b>（練習問題）</b><br><br>" +
-    "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
-    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
-    "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
-    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
-}else{
-  document.getElementById("instruction").innerHTML =
-    "音声再生終了後、自動的にレコーディングが始まります。<br><br>" +
-    "<span style='color:red; font-weight:bold;'>● 録音中</span> が表示されてから(ピッという音がします)発話を始めてください。<br><br>" +
-    "発話が終わったら「録音終了」ボタンを押してください。<br><br>" +
-    "（ボタンを押さなくても、25秒で次の問題に自動的に進みます。）";
-}
+    "<span style='font-weight:bold;'>" +
+    "音声再生後、自動で録音が始まります" +
+    "</span><br>" +
+    "<span style='color:red;'>● 録音中</span> が表示されてから発話してください";
 
-audio.src = q.audio;
-audio.onended = null;
-audio.addEventListener("ended",()=>startRec(q),{once:true});
+  audio.src = q.audio;
 
-// 👇ここを追加
-if(qIndex === 0){
-  // 練習問題だけ10秒後に再生
-  setTimeout(()=>{
-    audio.play();
-  }, 8000);
-}else{
-  // 本番はすぐ再生
+  audio.onended = () => startRec(q);
+
   audio.play();
 }
-}
 
-function startRec(q){
+
+// =======================
+// 録音開始
+// =======================
+function startRec(q) {
 
   recorder = new MediaRecorder(stream);
   chunks = [];
 
   recorder.ondataavailable = e => chunks.push(e.data);
 
-  recorder.onstop = async ()=>{
+  recorder.onstop = async () => {
 
     clearTimeout(timer);
-
     document.getElementById("recordingStatus").style.display = "none";
 
-    const blob = new Blob(chunks,{type:"audio/webm"});
+    const blob = new Blob(chunks, { type: "audio/webm" });
 
-    if(!q.practice){
+    if (!q.practice) {
       await upload(blob);
     }
 
     qIndex++;
-    setTimeout(showQ,500);
+    setTimeout(showQ, 500);
   };
 
   recorder.start();
 
   playBeep();
-
   document.getElementById("recordingStatus").style.display = "block";
 
   startTime = Date.now();
@@ -228,38 +234,25 @@ function startRec(q){
   const btn = document.getElementById("stopBtn");
   btn.style.display = "inline";
 
-  btn.onclick = ()=>{
+  btn.onclick = () => {
     recorder.stop();
     btn.style.display = "none";
   };
 
-  timer = setTimeout(()=>{
-    if(recorder.state==="recording") recorder.stop();
-    btn.style.display="none";
+  timer = setTimeout(() => {
+    if (recorder.state === "recording") recorder.stop();
+    btn.style.display = "none";
   }, MAX_TIME);
-
 }
 
 
-// ===============================
-// ★ ここが完全差し替え版 upload
-// ===============================
-
-function blobToBase64(blob){
-  return new Promise(resolve=>{
-    const reader = new FileReader();
-    reader.onloadend = ()=>{
-      resolve(reader.result.split(",")[1]);
-    };
-    reader.readAsDataURL(blob);
-  });
-}
-
-aasync function upload(blob){
+// =======================
+// アップロード（完全修正版）
+// =======================
+async function upload(blob) {
 
   const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
 
-  // 音声送信
   const fdAudio = new FormData();
   fdAudio.append("file", blob);
   fdAudio.append("filename", filename);
@@ -275,15 +268,14 @@ aasync function upload(blob){
 
   console.log("SENT:", filename);
 
-  // 回答ログ
   const fdResponse = new FormData();
-  fdResponse.append("type","response");
-  fdResponse.append("pid",pid);
-  fdResponse.append("q",qIndex);
-  fdResponse.append("rt",Date.now()-startTime);
-  fdResponse.append("test",TEST_NUMBER);
+  fdResponse.append("type", "response");
+  fdResponse.append("pid", pid);
+  fdResponse.append("q", qIndex);
+  fdResponse.append("rt", Date.now() - startTime);
+  fdResponse.append("test", TEST_NUMBER);
 
-  fetch(GAS_URL,{method:"POST",body:fdResponse});
+  fetch(GAS_URL, { method: "POST", body: fdResponse });
 }
 </script>
 
