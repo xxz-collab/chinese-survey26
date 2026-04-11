@@ -9,7 +9,7 @@
 <h2>日本語中訳反応テストその1</h2>
 
 <!-- 説明・同意 -->
-<div id="consentSection">
+<div id="consentSection" style="display:block; border:2px solid red;">
 <p>
 この調査は、日本語の問題文を聞いて（または読んで）から中国語に翻訳するまでにかかる時間を調べることを目的としています。回答内容や発音の正確さを評価するものではありませんので、安心してご参加ください。その場で言い直してもかまいません。<br>
 本調査にご協力いただける場合、今回のテストに加えて、今後2回の短いテスト（各回10問、所要時間約5分）にもご参加いただきます。<br>
@@ -56,7 +56,8 @@ HSKレベル／中検級：<input id="level"><br>
 </div>
 
 <script>
-
+const DROPBOX_TOKEN = "sl.u.AGaLkQMGNRfYuU9HcuyrMejF40Ftw5GHEdV7Wrz8j_cQTcDscDdVHuPuDYhHjEuX-d-kz5xgQXgm6AzeJG4feUi0thVB9aCa025p9LsJHNQqa47m1HdfVnb8w6ZECZ08qxIOMz4wmvvT8hpvZrCcZHWI0r9xOVsPPjuuk1yTTtlhOtiiBUkMM8QkpjL16kD1QUokxVthAi988BgJKe3eLSL1jZRYTCaihgLXMxJCEJcxF3QKg5NV0M7EI2KWQBGoVYHmd6LeF5pDSQ6eLwZZsP3jTijVQyiO-kUorLF5FZ8oQ7DNrWmMgpBsXTmaGNZefafhW_hVw5hbz4U7mcKjnPbweT1-7t46FKtYA1SI8DeaZ27d1oRyWz66qR58aNM8rJFk-4PQiCxsBB1sRxOhlhVqKy7D2a8niaLMIoe6SEGXgqmcoKz9asHCw8BcLl67-4ruciarHoUDMmY9ndR-0p-L_iJXuJ9yT8PpZnqKiCZY62pHEK7uwH-LqQgSRYlqeKaoGNNw1cjgYwTAyIjADQWAi-eS5rdRubAJ-QI0CBtBHjtzGicdYu_cz9WsZ-0TyQLu-fGZFc9pEjVCcAvdCdVnbhevupVYWhygRdzMkSqR5hjkvAEWBT0PhWbPMaLftptR0qd3nlYX1ztx9H2oVZMGn1fDDE3sfSosqLyiUPb8goEmASfxPxojB-5-93dbnCPWkDrKPBThXTYNwzVSJ_A9_ZSPr5Xs4-ClVPHy8d1ubq8W0Q5Vxa6SYLux78mgLn2Grn-ETq4CBHgi2NRMpFrycaA7uJ0k_5d2rajy44uWZLYd8pzJo2lF7Iyi00F1cvGS-Ppcjzf9CwJbfQuGGJsUyKOxxZLGY-ubzuedv-bozXspSxVukjQSsGYqVaEkmwgeWuVdtThLOQK9bvG47tPeOZoMP8HHyRuuha2gZS1gZtGpDYdCr78wWgJFFM8ODnv6kvC7WJhWNV7dBBDykHK4hN9oHXS3y_Va49Gz8VhkrSQKYNsip15h8wbJBKOkeElZjbTSUJFBB9OS7ssnAEeaJWJcWmEMLrHykb7eldgmfsx0IMkvlH40y6ueI9tmxOQpycpb4DFDfVJdTKZ9JyU5e-9EnD700X5VN43YJaNggdeSo9E6ULVc-w5or_s3V3xuQpH-eut3TyselJjqTxE5dS37YauikppIN1y17mPqRFpqQDeOeqYSSN-_QDbLU_ivNTR324Q9hgK4UDt4nVKRduJG3SH8OCM1fDerGQdhMbjX0WM8llWNpufp487P9lxvpjxr0ozgnftkUBCmpLZ7DOStBA3bzTQlfrpvRbGbHw";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwROLMtJCPovQgYd5LFCB4rt7YbF4KNynJX31iYjH_GBMgZFoE1XDrOKHxiCkifeVnWZw/exec";
 const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ず「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
@@ -266,5 +267,4 @@ fetch(GAS_URL,{method:"POST",body:fd})
 
 </body>
 </html>
-
 
