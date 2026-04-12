@@ -61,15 +61,6 @@ const MAX_TIME = 25000;
 const RECORDING_MESSAGE = "音声再生終了後、自動的にレコーディングが始まります。必ずピッと音が鳴り「録音中」のマークが出てから発話を始め、終了後は「録音終了」ボタンを押してください。（ボタンを押さなくても、25秒で次の問題に自動的に切り替わります。）";
 const TEST_NUMBER = 1; // ← テスト1なら1
 
-  function blobToBase64(blob) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
-}
-
 let pid="";
 let qIndex=0;
 let recorder, chunks=[], timer, startTime;
@@ -284,33 +275,28 @@ function startRec(q) {
 // =======================
 // アップロード（完全修正版）
 // =======================
-async function upload(blob){
+async function upload(blob) {
 
-  const filename = `${pid}_Q${qIndex}_${Date.now()}.webm`;
+  const filename = `${pid}_Q${qIndex}_${Date.now()}`;
 
-  const base64 = await blobToBase64(blob);
+  const formData = new FormData();
+  formData.append("type", "audio");
+  formData.append("file", blob, filename + ".webm");
+  formData.append("pid", pid);
+  formData.append("q", qIndex);
+  formData.append("rt", Date.now() - startTime);
+  formData.append("test", TEST_NUMBER);
 
-  await fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      type: "audio",
-      filename: filename,
-      test: TEST_NUMBER,
-      pid: pid,
-      audio: base64
-    })
-  });
+  try {
+    const res = await fetch(GAS_URL, {
+      method: "POST",
+      body: formData
+    });
 
-  console.log("SENT:", filename);
-
-  const fd = new FormData();
-  fd.append("type","response");
-  fd.append("pid",pid);
-  fd.append("q",qIndex);
-  fd.append("rt",Date.now()-startTime);
-  fd.append("test",TEST_NUMBER);
-
-  fetch(GAS_URL,{method:"POST",body:fd});
+    console.log("UPLOAD OK:", filename);
+  } catch (e) {
+    console.error("UPLOAD ERROR:", e);
+  }
 }
 </script>
 
