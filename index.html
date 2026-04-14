@@ -46,7 +46,8 @@ HSKレベル／中検級：<input id="level"><br>
 <!-- 実験 -->
 <div id="expSection" style="display:none;">
 <p id="instruction"></p>
-
+<p id="recordingStatus" style="display:none; color:red; font-weight:bold;">
+● 録音中です
 </p>
 <p id="qtext" style="font-size:20px;font-weight:bold;"></p>
 <audio id="audio"></audio>
@@ -193,9 +194,8 @@ function showQ() {
 
   document.getElementById("qtext").innerText = q.text;
 
-  document.getElementById("instruction").innerHTML =
-    "<b>音声再生後、ピッという音が鳴ると自動で録音が始まります</b><br>" +
-    "<span style='color:red;'>● 録音中</span>";
+ document.getElementById("instruction").innerHTML = `
+  <b>音声再生後、ピッという音が鳴ると「<span style="color:red;">● 録音中</span>」という文字が表示され、自動で録音が始まります。</b><br>
 
   audio.src = q.audio;
 
