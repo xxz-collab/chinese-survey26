@@ -196,21 +196,21 @@ function showQ() {
 
  document.getElementById("instruction").innerHTML = `
   <b>音声再生後、ピッという音が鳴ると「<span style="color:red;">● 録音中</span>」という文字が表示され、自動で録音が始まります。</b><br>
+`;
 
-  audio.src = q.audio;
+audio.src = q.audio;
 
-  // ←ここに入れる
-  console.log("PLAY:", q.audio);
+console.log("PLAY:", q.audio);
 
-  audio.onended = () => {
-    console.log("AUDIO END");
-    startRec(q);
-  };
+audio.onended = () => {
+  console.log("AUDIO END");
+  startRec(q);
+};
 
-  audio.play().catch(err => {
-    console.error(err);
-    alert("音声再生エラー");
-  });
+audio.play().catch(err => {
+  console.error(err);
+  alert("音声再生エラー");
+});
 }
 // =======================
 // 録音開始
